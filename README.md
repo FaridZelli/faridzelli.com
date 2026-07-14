@@ -1,11 +1,11 @@
-This is a minimal Static Site Generator for my personal website.
+This is a minimal static site generator for my personal website.
 
 # Prerequisites
 
-[Node.js](https://nodejs.org/en)
-[Python 3](https://www.python.org/)
+- [Node.js](https://nodejs.org/en)
+- [Python 3](https://www.python.org/)
 
-## Dependencies
+# Libraries
 
 - [Marked](https://github.com/markedjs/marked)
 - [front-matter](https://github.com/jxson/front-matter/)
@@ -16,15 +16,20 @@ This is a minimal Static Site Generator for my personal website.
 
 # Quick Setup
 
-```
+```bash
+# Clone the repository
 git clone https://github.com/FaridZelli/faridzelli.com
+
+# Change your working directory
 cd faridzelli.com
+
+# Pull required dependencies from npm
 npm install
 ```
 
 # Usage
 
-```
+```bash
 # Build the website
 node build
 
