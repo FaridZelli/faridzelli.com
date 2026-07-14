@@ -86,10 +86,10 @@ document.addEventListener("DOMContentLoaded", () => {
     for (let i = 0; i < shapeCount; i++) {
       const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
       const shapeElement = document.createElement("div");
-      shapeElement.classList.add("shape", randomShape.name);
       shapeElement.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#7F4300" stroke="#FFA742" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">${randomShape.svg}</svg>`;
       const randomX = Math.random() * 100;
       const randomY = Math.random() * 100;
+      shapeElement.style.position = "absolute";
       shapeElement.style.left = `${randomX}%`;
       shapeElement.style.top = `${randomY}%`;
       const animations = ["moveDiagonal", "moveUpDown", "moveSideways"];

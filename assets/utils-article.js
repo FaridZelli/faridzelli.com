@@ -2,7 +2,7 @@
 // https://github.com/FaridZelli
 // ----------------------------------------
 
-import { ARTICLE_FILE_NAMES } from './article-list-index.js';
+import { ARTICLE_FILE_NAMES } from '/articles/index-list.js';
 
 // Base styling for date text elements (reused across components)
 const BASE_DATE_STYLE = {

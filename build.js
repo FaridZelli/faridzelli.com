@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// build.js
 const fs = require('fs');
 const path = require('path');
 const fm = require('front-matter');
@@ -8,7 +9,7 @@ const chokidar = require('chokidar');
 // ======================
 // CONFIGURATION
 // ======================
-const BUILD_CONFIGS = require('./build-configs.js');
+const BUILD_CONFIGS = require('./build-config.js');
 const IS_LIVE_MODE = process.argv.includes('--live');
 const HTTP_SERVER_PORT = 8000;
 const HTTP_SERVER_HOST = '127.0.0.1';
