@@ -7,21 +7,52 @@ const { marked } = require('marked');
 const chokidar = require('chokidar');
 
 // ======================
-// CONFIGURATION
+// CONFIGURATION & SETUP
 // ======================
-const BUILD_CONFIGS = require('./build-config.js');
+const CONFIG_FILE = './build-config.js';
+
+/** @typedef {import('./build-config.js').BuildConfig} BuildConfig */
+
+const rawConfig = require(CONFIG_FILE);
 const IS_LIVE_MODE = process.argv.includes('--live');
 const HTTP_SERVER_PORT = 8000;
 const HTTP_SERVER_HOST = '127.0.0.1';
+const BASE_DIR = __dirname;
 
-// ======================
-// SETUP
-// ======================
+/**
+ * Safely resolves a relative path against a base directory.
+ * Prevents directory traversal attacks (e.g., escaping the base folder).
+ */
+function safePath(base, relativePath) {
+  const resolved = path.resolve(base, relativePath);
+  if (resolved !== base && !resolved.startsWith(base + path.sep)) {
+    throw new Error(`🛑 Security Error: Path "${relativePath}" attempts to access files outside the allowed directory.`);
+  }
+  return resolved;
+}
+
+// Resolve and validate the custom working directory
+const WORKING_DIR = safePath(BASE_DIR, rawConfig.workingDir || '.');
+
+// Helper to cleanly resolve paths, returning undefined if the config property is missing
+const resolvePath = (p) => p ? safePath(WORKING_DIR, p) : undefined;
+
+// Resolve and validate all configuration paths
+const BUILD_CONFIGS = rawConfig.configs.map(cfg => ({
+  ...cfg,
+  srcDir: resolvePath(cfg.srcDir),
+  outDir: resolvePath(cfg.outDir),
+  template: resolvePath(cfg.template),
+  indexOutputPath: resolvePath(cfg.indexOutputPath)
+}));
+
 marked.setOptions({ headerIds: false, mangle: false, gfm: true });
 
-// Create output directories (recursive handles existing dirs safely)
+// Create output directories and skip if undefined
 BUILD_CONFIGS.forEach(cfg => {
-  fs.mkdirSync(cfg.outDir, { recursive: true });
+  if (cfg.outDir) {
+    fs.mkdirSync(cfg.outDir, { recursive: true });
+  }
 });
 
 // ======================
@@ -30,7 +61,7 @@ BUILD_CONFIGS.forEach(cfg => {
 /**
  * Process single Markdown file into HTML
  * @param {string} filePath - Absolute path to source .md file
- * @param {import('./build-configs.js').BuildConfig} config
+ * @param {BuildConfig} config
  * @returns {string|null} Physical output path (for index) or null on skip/error
  */
 function processFile(filePath, config) {
@@ -90,7 +121,7 @@ function processFile(filePath, config) {
 
 /**
  * Remove orphaned .html files (no matching .md in source) and log deletions
- * @param {import('./build-configs.js').BuildConfig} config
+ * @param {BuildConfig} config
  */
 function cleanupOrphanedHtml(config) {
   if (!fs.existsSync(config.outDir)) return;
@@ -118,10 +149,16 @@ function cleanupOrphanedHtml(config) {
 
 /**
  * Build all files for a configuration section
- * @param {import('./build-configs.js').BuildConfig} config
+ * @param {BuildConfig} config
  * @returns {string[]} Physical paths of successfully built files
  */
 function buildConfig(config) {
+  // Safety guard: Ensure the core paths actually exist in the config object
+  if (!config.srcDir || !config.outDir || !config.template) {
+    console.warn(`⚠️ Skipping ${config.name}: Missing required paths (srcDir, outDir, or template) in config.`);
+    return [];
+  }
+
   cleanupOrphanedHtml(config);
   if (!fs.existsSync(config.srcDir)) {
     console.warn(`⚠️ Skipping ${config.name}: Source directory missing`);
@@ -148,7 +185,7 @@ function buildConfig(config) {
       filteredPaths.sort();
       const jsContent = `export const ${config.indexVariableName} = ${JSON.stringify(filteredPaths, null, 2)}\n`;
       fs.writeFileSync(config.indexOutputPath, jsContent);
-      console.log(`📝 Generated index (${filteredPaths.length} items): ${path.relative(__dirname, config.indexOutputPath)}`);
+      console.log(`📝 Generated index (${filteredPaths.length} items): ${path.relative(WORKING_DIR, config.indexOutputPath)}`);
     }
 
     console.log(`✨ ${config.name} build complete`);
@@ -172,7 +209,7 @@ if (IS_LIVE_MODE) {
     serverProcess = spawn('python3', [
       '-m', 'http.server', String(HTTP_SERVER_PORT), '-b', HTTP_SERVER_HOST
     ], {
-      cwd: __dirname,
+      cwd: WORKING_DIR,
       stdio: ['ignore', 'pipe', 'pipe'],
       shell: false
     });

@@ -10,28 +10,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="darkreader-lock">
 
-    <link rel="canonical" href="https://faridzelli.com">
+    <link rel="canonical" href="https://faridzelli.com/articles{{URL}}">
     <link rel="icon" href="/media/favicon.svg" type="image/svg+xml">
 
-    <title>Home | Farid Zelli</title>
+    <title>{{TITLE}}</title>
 
-    <meta name="description" content="I'm an audio-visual creative with a longstanding background in data privacy and open-source software.">
+    <meta name="description" content="{{DESCRIPTION}}">
 
     <meta name="language" content="en">
     <meta name="author" content="Farid Zelli">
 
     <meta property="og:type" content="article">
-    <meta property="og:title" content="Home | Farid Zelli">
-    <meta property="og:description" content="I'm an audio-visual creative with a longstanding background in data privacy and open-source software.">
-    <meta property="og:url" content="https://faridzelli.com">
+    <meta property="og:title" content="{{TITLE}}">
+    <meta property="og:description" content="{{DESCRIPTION}}">
+    <meta property="og:url" content="https://faridzelli.com/articles{{URL}}">
     <meta property="og:site_name" content="Farid Zelli">
 
-    <meta name="twitter:title" content="Home | Farid Zelli">
-    <meta name="twitter:description" content="I'm an audio-visual creative with a longstanding background in data privacy and open-source software.">
+    <meta property="article:published_time" content="{{DATE_PUBLISHED}}">
+    <meta property="article:modified_time" content="{{DATE_MODIFIED}}">
+
+    <meta name="twitter:title" content="{{TITLE}}">
+    <meta name="twitter:description" content="{{DESCRIPTION}}">
     <meta name="twitter:creator" content="@faridzelli">
 
     <link rel="stylesheet" href="/assets/github-markdown.css">
     <link rel="stylesheet" href="/assets/style.css">
+    <link rel="stylesheet" href="/assets/style-article-override.css">
     <link rel="stylesheet" href="/assets/style-github-markdown-override.css">
 </head>
 
@@ -59,65 +63,43 @@
 
     <main>
         <section id="hero">
-            <div class="svg-shapes-more"></div>
-            <div class="red-rectangle">
-                <div class="red-rectangle-content">
-                    <p>Welcome to my journal!<br><br>I'm Farid Zelli, an audio-visual creative with a longstanding background in data privacy and open-source software.</p>
-                </div>
-                <div class="profile">
-                    <img src="/assets/resources/index/profile.jpg" alt="Profile Picture">
+            <div class="svg-shapes-less"></div>
+            <div class="basic-container">
+                <div class="red-rectangle">
+                    <div class="red-rectangle-content">
+                        <h1>{{HERO}}</h1>
+                    </div>
                 </div>
             </div>
-            <a href="javascript:void(0)" class="scroll-arrow" aria-label="Scroll Down">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
-                    <path d="M12 5v.5m0 3v1.5m0 3v6"></path>
-                    <path d="M18 13l-6 6"></path>
-                    <path d="M6 13l6 6"></path>
-                </svg>
-            </a>
         </section>
 
-        <section id="content">
+        <article id="content" class="markdown-body">
             <div class="article-container">
-                <h1 style="text-align: center;">Recent Articles</h1>
-                <br>
-                <ul id="article-list-recent"></ul>
-                <p style="text-align: center;"><a href="/articles/">View more</a></p>
+                <blockquote>
+                <p id="tz-para" style="display:none" dir="rtl">ⓘ منطقۀ زمانی شما «ساعت رسمی ایران» است.<br>
+هم‌میهن گرامی، مقالات به دلیل محدودیت زمانی تنها به زبان انگلیسی منتشر می‌شوند. توصیه می‌کنم برای ترجمه از هوش مصنوعی استفاده کنید.
+                </blockquote>
+                </p>
+                <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                if (document.getElementById('disable-tz-message')) return;
+                const TARGET = 'Asia/Tehran';
+                try {
+                    const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                    if (userTz === TARGET) {
+                    document.getElementById('tz-para').style.display = 'block';
+                    }
+                } catch (e) {
+                    console.warn('Timezone detection failed; content remains hidden', e);
+                }
+                });
+                </script>
+                <ul id="article-date"></ul>
+
+                {{ARTICLE_CONTENT}}
             </div>
-        </section>
+        </article>
     </main>
-
-<!-- Bouncing Arrow Script -->
-
-    <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const redRectangle = document.querySelector('.red-rectangle');
-        const scrollArrow = document.querySelector('.scroll-arrow');
-
-        function updateArrowPosition() {
-            const rect = redRectangle.getBoundingClientRect();
-            const arrowTop = rect.bottom + window.scrollY + 20;
-            scrollArrow.style.top = `${arrowTop}px`;
-        }
-
-        window.addEventListener('resize', updateArrowPosition);
-        window.addEventListener('load', updateArrowPosition);
-        updateArrowPosition();
-    });
-    document.querySelector(".scroll-arrow").addEventListener("click", function(e) {
-        e.preventDefault();
-
-        const header = document.querySelector("header");
-        const hero = document.querySelector("#hero");
-        const headerHeight = header.offsetHeight;
-        const heroBottom = hero.offsetTop + hero.offsetHeight;
-
-        window.scrollTo({
-            top: heroBottom - headerHeight,
-            behavior: "smooth"
-        });
-    });
-    </script>
 
 <!-- Footer -->
 
@@ -164,7 +146,7 @@
                             <div class="filled"></div>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-telegram"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 10l-4 4l6 6l4 -16l-18 7l4 2l2 6l3 -4" /></svg>
                         </a>
-                        <div class="tooltip">Ruche d’État</div>
+                        <div class="tooltip">Telegram</div>
                     </li>
                 </ul>
                 <div class="email-list">

@@ -1,5 +1,9 @@
-// build-configs.js
-const path = require('path');
+/**
+ * Website Build Configuration
+ *
+ * Define your content directories and build settings below.
+ * All paths are relative to the 'workingDir'.
+ */
 
 /**
  * @typedef {Object} BuildConfig
@@ -13,27 +17,32 @@ const path = require('path');
  * @property {string} [indexVariableName] - JS variable name (required if generateIndexFile=true)
  */
 
-/** @type {BuildConfig[]} */
-module.exports = [
-  {
-    name: 'articles',
-    srcDir: path.join(__dirname, 'articles-markdown'),
-    outDir: path.join(__dirname, 'articles'),
-    template: path.join(__dirname, 'assets/template-article.html.txt'),
-    requiredFields: ['title', 'description', 'datePublished', 'dateModified'],
+module.exports = {
+	/**
+	 * The root folder for your website content.
+	 * Must be a subfolder relative to where this script is located.
+	 */
+	workingDir: 'public',
 
-    generateIndexFile: true,
-    indexOutputPath: path.join(__dirname, 'articles/index-list.js'),
-    indexVariableName: 'ARTICLE_FILE_NAMES'
-  },
-  {
-    name: 'about',
-    srcDir: path.join(__dirname, 'about-markdown'),
-    outDir: path.join(__dirname, 'about'),
-    template: path.join(__dirname, 'assets/template-article.html.txt'),
-    requiredFields: ['title', 'description'],
-
-    generateIndexFile: false
-  }
-];
-
+	/** @type {BuildConfig[]} */
+	configs: [
+		{
+			name: 'articles',
+			srcDir: 'articles-markdown',
+			outDir: 'articles',
+			template: 'assets/template-article.html.txt',
+			requiredFields: ['title', 'description', 'datePublished', 'dateModified'],
+			generateIndexFile: true,
+			indexOutputPath: 'articles/index-list.js',
+			indexVariableName: 'ARTICLE_FILE_NAMES'
+		},
+		{
+			name: 'about',
+			srcDir: 'about-markdown',
+			outDir: 'about',
+			template: 'assets/template-article.html.txt',
+			requiredFields: ['title', 'description'],
+			generateIndexFile: false
+		}
+	]
+};
