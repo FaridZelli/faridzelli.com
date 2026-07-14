@@ -11,7 +11,7 @@
     <meta name="darkreader-lock">
 
     <link rel="canonical" href="https://faridzelli.com/articles{{URL}}">
-    <link rel="icon" href="/media/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="/assets/resources/favicon.svg" type="image/svg+xml">
 
     <title>{{TITLE}}</title>
 
