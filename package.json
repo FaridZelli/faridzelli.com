@@ -1,7 +1,7 @@
 {
-  "name": "faridzelli-site-builder",
+  "name": "faridzelli-ssg",
   "version": "1.0.0",
-  "description": "A vibe-coded minimal static site builder",
+  "description": "Vibe-coded minimal static site generator for faridzelli.com",
   "scripts": {
     "build": "node build.js",
     "dev": "node build.js --live"
