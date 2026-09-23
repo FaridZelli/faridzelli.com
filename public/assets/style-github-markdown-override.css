@@ -23,6 +23,13 @@
 	font-size: 1.2rem;
 }
 
+@media (max-width: 768px), (max-height: 412px) {
+
+	.markdown-body {
+		font-size: 15px;
+	}
+}
+
 @media (prefers-color-scheme: dark) {
 	.markdown-body, [data-theme="dark"] {
 		/* Base palette aligned to your dark theme */
