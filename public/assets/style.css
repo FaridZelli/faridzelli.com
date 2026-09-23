@@ -22,6 +22,7 @@ body {
 	line-height: 1.6;
 	color: #222;
 	background-color: #fdfdfd;
+	--article-date-color: #666;
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
@@ -74,8 +75,9 @@ ul {
 
 @media (prefers-color-scheme: dark) {
 	body {
-		background-color: #1B1B1B;
 		color: #eee;
+		background-color: #1B1B1B;
+		--article-date-color: #aaa;
 	}
 
 	h1 {
