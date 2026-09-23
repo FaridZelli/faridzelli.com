@@ -35,7 +35,7 @@
 		/* Base palette aligned to your dark theme */
 		--bgColor-default: #1B1B1B;
 		--fgColor-default: #eee;
-		--fgColor-muted: #bbb;
+		--fgColor-muted: #aaa;
 		--bgColor-muted: #252525;
 
 		/* Accent system unified to your brand blue */
@@ -49,7 +49,7 @@
 	.markdown-body, [data-theme="light"] {
 		/* Base palette aligned to your light theme */
 		--bgColor-default: #fdfdfd;
-		--fgColor-default: #333;
+		--fgColor-default: #222;
 		--fgColor-muted: #666;
 		--bgColor-muted: #f8f8f8;
 
