@@ -144,7 +144,7 @@ header {
 	box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.8);
 }
 
-@media (min-width: 769px) and (min-height: 413px) {
+@media (min-width: 769px) and (min-height: 481px) {
 	@media (hover: hover) {header:hover {
 		background-color: rgba(40, 40, 40, 0.8);
 		backdrop-filter: blur(10px);
@@ -189,7 +189,7 @@ header nav a {
 	margin-right: 1.5rem;
 }
 
-@media (min-width: 769px) and (min-height: 413px) {
+@media (min-width: 769px) and (min-height: 481px) {
 	@media (hover: hover) {header .logo a:hover {
 		color: white;
 		text-decoration: none;
@@ -200,7 +200,7 @@ header nav a {
 	}}
 }
 
-@media (min-height: 413px) {
+@media (min-height: 481px) {
 	header .logo-landscape {
 		display: none;
 	}
@@ -427,7 +427,7 @@ padding: 1rem 0;
 /* --- Mobile Site --- */
 /* ---------------------------------------- */
 
-@media (max-width: 768px), (max-height: 412px) {
+@media (max-width: 768px), (max-height: 480px) {
 
 	html {
 		font-size: 15px;
@@ -500,7 +500,7 @@ padding: 1rem 0;
 		display:none;
 	}
 
-	@media (max-height: 412px) {
+	@media (max-height: 480px) {
 		#hero {
 		align-items: flex-start;
 		}
@@ -530,7 +530,7 @@ padding: 1rem 0;
 
 }
 
-@media (min-width: 769px) and (min-height: 413px) {
+@media (min-width: 769px) and (min-height: 481px) {
   .scroll-arrow {
   	display: none;
 }}
