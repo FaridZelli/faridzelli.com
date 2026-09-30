@@ -2,7 +2,7 @@
 // https://github.com/FaridZelli
 // ----------------------------------------
 
-import { ARTICLE_FILE_NAMES } from '/articles/index-list.js';
+import { ARTICLE_METADATA } from '/articles/index-list.js';
 
 // Base styling for date text elements (reused across components)
 const BASE_DATE_STYLE = {
@@ -25,8 +25,8 @@ function formatArticleDate(date) {
 
 initializeArticleIndex();
 
-async function initializeArticleIndex() {
-	const articleMetadataList = await loadAllArticleMetadata();
+function initializeArticleIndex() {
+	const articleMetadataList = loadAllArticleMetadata();
 	const sortedArticles = sortArticlesByDateDescending(articleMetadataList);
 
 	renderArticlesToContainer(sortedArticles, 'article-list');
@@ -35,64 +35,15 @@ async function initializeArticleIndex() {
 }
 
 // ------------------------------
-// Fetch and parse metadata for all articles
+// Load metadata directly from the generated index file
 // ------------------------------
 
-async function loadAllArticleMetadata() {
-	const metadataList = [];
-
-	for (const fileName of ARTICLE_FILE_NAMES) {
-		try {
-			const metadata = await fetchArticleMetadata(fileName);
-			metadataList.push(metadata);
-		} catch (error) {
-			console.error(`Failed to load article metadata: ${fileName}`, error);
-		}
-	}
-
-	return metadataList;
-}
-
-// ------------------------------
-// Fetch a single article and extract metadata from its HTML
-// ------------------------------
-
-async function fetchArticleMetadata(fileName) {
-	const response = await fetch(fileName);
-	const htmlText = await response.text();
-
-	const documentObject = new DOMParser().parseFromString(
-		htmlText,
-		"text/html"
-	);
-
-	const title =
-	documentObject.querySelector("title")?.textContent?.trim()
-	?? fileName;
-
-	const description =
-	documentObject
-	.querySelector('meta[name="description"]')
-	?.getAttribute("content")
-	?? "";
-
-	const dateString =
-	documentObject
-	.querySelector('meta[property="article:published_time"]')
-	?.getAttribute("content")
-	?? null;
-
-	const publicationDate = dateString
-	? new Date(dateString)
-	: new Date(0); // fallback for undated articles
-
-	return {
-		fileName,
-		title,
-		description,
-		publicationDate,
-		dateString
-	};
+function loadAllArticleMetadata() {
+	// Map over the imported metadata to parse the dateString into a Date object
+	return ARTICLE_METADATA.map(article => ({
+		...article,
+		publicationDate: article.dateString ? new Date(article.dateString) : new Date(0)
+	}));
 }
 
 // ------------------------------

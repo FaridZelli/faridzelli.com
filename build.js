@@ -62,7 +62,7 @@ BUILD_CONFIGS.forEach(cfg => {
  * Process single Markdown file into HTML
  * @param {string} filePath - Absolute path to source .md file
  * @param {BuildConfig} config
- * @returns {string|null} Physical output path (for index) or null on skip/error
+ * @returns {object|null} Object containing { path, metadata } or null on skip/error
  */
 function processFile(filePath, config) {
   try {
@@ -112,7 +112,16 @@ function processFile(filePath, config) {
 
     fs.writeFileSync(outPath, template);
     console.log(`✅ Built ${config.name}: ${fileName} → ${templateUrl}`);
-    return indexPathEntry;
+
+    return {
+      path: indexPathEntry,
+      metadata: {
+        fileName: indexPathEntry,
+        title: replacements['{{TITLE}}'],
+        description: replacements['{{DESCRIPTION}}'],
+        dateString: replacements['{{DATE_PUBLISHED}}']
+      }
+    };
   } catch (error) {
     console.error(`❌ ${config.name} error (${path.basename(filePath)}):`, error.message);
     return null;
@@ -150,7 +159,7 @@ function cleanupOrphanedHtml(config) {
 /**
  * Build all files for a configuration section
  * @param {BuildConfig} config
- * @returns {string[]} Physical paths of successfully built files
+ * @returns {object[]} Array of { path, metadata } for successfully built files
  */
 function buildConfig(config) {
   // Safety guard: Ensure the core paths actually exist in the config object
@@ -172,24 +181,26 @@ function buildConfig(config) {
   }
 
   console.log(`🔨 Building ${mdFiles.length} ${config.name} page(s)...`);
-  const generatedPaths = [];
+  const generatedItems = [];
 
   mdFiles.forEach(file => {
     const result = processFile(path.join(config.srcDir, file), config);
-    if (result) generatedPaths.push(result);
+    if (result) generatedItems.push(result);
   });
 
     // Generate JS index file (excludes index.html, sorted for VCS stability)
     if (config.generateIndexFile && config.indexOutputPath && config.indexVariableName) {
-      const filteredPaths = generatedPaths.filter(p => path.basename(p) !== 'index.html');
-      filteredPaths.sort();
-      const jsContent = `export const ${config.indexVariableName} = ${JSON.stringify(filteredPaths, null, 2)}\n`;
+      const filteredItems = generatedItems.filter(item => path.basename(item.path) !== 'index.html');
+      filteredItems.sort((a, b) => a.path.localeCompare(b.path));
+
+      const metadataList = filteredItems.map(item => item.metadata);
+      const jsContent = `export const ${config.indexVariableName} = ${JSON.stringify(metadataList, null, 2)}\n`;
       fs.writeFileSync(config.indexOutputPath, jsContent);
-      console.log(`📝 Generated index (${filteredPaths.length} items): ${path.relative(WORKING_DIR, config.indexOutputPath)}`);
+      console.log(`📝 Generated index (${filteredItems.length} items): ${path.relative(WORKING_DIR, config.indexOutputPath)}`);
     }
 
     console.log(`✨ ${config.name} build complete`);
-    return generatedPaths;
+    return generatedItems;
 }
 
 // ======================

@@ -34,7 +34,7 @@ module.exports = {
 			requiredFields: ['title', 'description', 'datePublished', 'dateModified'],
 			generateIndexFile: true,
 			indexOutputPath: 'articles/index-list.js',
-			indexVariableName: 'ARTICLE_FILE_NAMES'
+			indexVariableName: 'ARTICLE_METADATA'
 		},
 		{
 			name: 'about',
