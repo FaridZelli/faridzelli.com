@@ -4,6 +4,6 @@ description: List of articles written by Farid Zelli.
 hero: List of articles
 ---
 
-<span id="disable-tz-message" style="display:none" aria-hidden="true"></span>
-
+<br>
 <ul id="article-list"></ul>
+<br>

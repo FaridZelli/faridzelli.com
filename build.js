@@ -1,4 +1,9 @@
 #!/usr/bin/env node
+
+// ----------------------------------------
+// https://github.com/FaridZelli
+// ----------------------------------------
+
 // build.js
 const fs = require('fs');
 const path = require('path');
@@ -19,10 +24,6 @@ const HTTP_SERVER_PORT = 8000;
 const HTTP_SERVER_HOST = '127.0.0.1';
 const BASE_DIR = __dirname;
 
-/**
- * Safely resolves a relative path against a base directory.
- * Prevents directory traversal attacks (e.g., escaping the base folder).
- */
 function safePath(base, relativePath) {
   const resolved = path.resolve(base, relativePath);
   if (resolved !== base && !resolved.startsWith(base + path.sep)) {
@@ -31,69 +32,60 @@ function safePath(base, relativePath) {
   return resolved;
 }
 
-// Resolve and validate the custom working directory
 const WORKING_DIR = safePath(BASE_DIR, rawConfig.workingDir || '.');
-
-// Helper to cleanly resolve paths, returning undefined if the config property is missing
+const WEB_DIR = rawConfig.webDir ? safePath(BASE_DIR, rawConfig.webDir) : WORKING_DIR;
 const resolvePath = (p) => p ? safePath(WORKING_DIR, p) : undefined;
 
-// Resolve and validate all configuration paths
 const BUILD_CONFIGS = rawConfig.configs.map(cfg => ({
   ...cfg,
   srcDir: resolvePath(cfg.srcDir),
   outDir: resolvePath(cfg.outDir),
   template: resolvePath(cfg.template),
-  indexOutputPath: resolvePath(cfg.indexOutputPath)
+  indexOutputPath: resolvePath(cfg.indexOutputPath),
+  extensions: (cfg.extensions || []).map(ext => resolvePath(ext))
 }));
 
 marked.setOptions({ headerIds: false, mangle: false, gfm: true });
 
-// Create output directories and skip if undefined
 BUILD_CONFIGS.forEach(cfg => {
-  if (cfg.outDir) {
-    fs.mkdirSync(cfg.outDir, { recursive: true });
-  }
+  if (cfg.outDir) fs.mkdirSync(cfg.outDir, { recursive: true });
 });
 
 // ======================
 // CORE FUNCTIONS
 // ======================
-/**
- * Process single Markdown file into HTML
- * @param {string} filePath - Absolute path to source .md file
- * @param {BuildConfig} config
- * @returns {object|null} Object containing { path, metadata } or null on skip/error
- */
-function processFile(filePath, config) {
-  try {
-    const fileContent = fs.readFileSync(filePath, 'utf8');
-    const { attributes, body } = fm(fileContent);
-    const htmlContent = marked(body);
-    const baseName = path.basename(filePath, '.md');
-    const fileName = `${baseName}.html`;
-    const isIndex = fileName === 'index.html';
 
-    // Validate required front-matter
-    const fieldsToValidate = isIndex
-    ? config.requiredFields.filter(f => !['datePublished', 'dateModified'].includes(f))
-    : config.requiredFields;
+function loadExtensions(config) {
+  if (!Array.isArray(config.extensions)) return [];
 
-    const missing = fieldsToValidate.filter(f => !attributes[f]);
-    if (missing.length) {
-      console.warn(`⚠️ Skipping ${config.name}/${path.basename(filePath)}: Missing [${missing.join(', ')}]`);
-      return null;
+  const loaded = [];
+  config.extensions.forEach(extAbsPath => {
+    try {
+      if (IS_LIVE_MODE) delete require.cache[require.resolve(extAbsPath)];
+      const ext = require(extAbsPath);
+
+      if (ext.id && typeof ext.render === 'function') {
+        loaded.push(ext);
+      } else if (typeof ext === 'object' && ext !== null) {
+        for (const [id, render] of Object.entries(ext)) {
+          if (typeof render === 'function') loaded.push({ id, render });
+        }
+      } else {
+        console.warn(`⚠️ Extension "${extAbsPath}" has an invalid format.`);
+      }
+    } catch (err) {
+      console.error(`❌ Failed to load extension "${extAbsPath}":`, err.message);
     }
+  });
+  return loaded;
+}
 
-    // URL rationale: Trailing slash for directory indexes aligns with RFC 3986 and HTTP spec
-    const templateUrl = isIndex
-    ? `/${config.name}/`
-    : `/${config.name}/${fileName}`;
-
-    // Physical path for filename index (distinct from semantic URL)
-    const indexPathEntry = `/${config.name}/${fileName}`;
+function processFile(parsed, config, extensions) {
+  const { filePath, attributes, body, fileName, indexPathEntry, templateUrl } = parsed;
+  try {
+    const htmlContent = marked(body);
     const outPath = path.join(config.outDir, fileName);
 
-    // Apply template replacements (escape placeholders for regex safety)
     let template = fs.readFileSync(config.template, 'utf8');
     const replacements = {
       '{{TITLE}}': String(attributes.title ?? '').trim(),
@@ -110,125 +102,152 @@ function processFile(filePath, config) {
       template = template.replace(new RegExp(safePh, 'g'), val);
     });
 
+    // Render Extensions
+    extensions.forEach(ext => {
+      const safeId = ext.id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(
+        `<([a-zA-Z][a-zA-Z0-9-]*)\\b[^>]*\\bid\\s*=\\s*(?:"${safeId}"|'${safeId}')[^>]*(?:\\/>\\s*|>\\s*<\\/\\1>)`,
+        'gi'
+      );
+
+      let rendered;
+      try {
+        // Pass only bare minimum current-page context
+        rendered = ext.render({
+          attributes,
+          fileName: indexPathEntry
+        });
+      } catch (err) {
+        console.error(`❌ Extension "${ext.id}" failed to render:`, err.message);
+        return;
+      }
+
+      if (rendered !== undefined && rendered !== null) {
+        const newTemplate = template.replace(regex, () => String(rendered));
+        if (newTemplate !== template) {
+          template = newTemplate;
+          console.log(`✨ Rendered widget: ${ext.id} in ${fileName}`);
+        }
+      }
+    });
+
     fs.writeFileSync(outPath, template);
     console.log(`✅ Built ${config.name}: ${fileName} → ${templateUrl}`);
-
-    return {
-      path: indexPathEntry,
-      metadata: {
-        fileName: indexPathEntry,
-        title: replacements['{{TITLE}}'],
-        description: replacements['{{DESCRIPTION}}'],
-        dateString: replacements['{{DATE_PUBLISHED}}']
-      }
-    };
   } catch (error) {
     console.error(`❌ ${config.name} error (${path.basename(filePath)}):`, error.message);
-    return null;
   }
 }
 
-/**
- * Remove orphaned .html files (no matching .md in source) and log deletions
- * @param {BuildConfig} config
- */
 function cleanupOrphanedHtml(config) {
   if (!fs.existsSync(config.outDir)) return;
-
-  // Get current .html files in output
   const htmlFiles = fs.readdirSync(config.outDir).filter(f => f.endsWith('.html'));
-
-  // Build set of valid .md base names from source (if accessible)
   const validMdBases = new Set();
   if (fs.existsSync(config.srcDir)) {
-    const mdFiles = fs.readdirSync(config.srcDir).filter(f => f.endsWith('.md'));
-    mdFiles.forEach(f => validMdBases.add(path.basename(f, '.md')));
+    fs.readdirSync(config.srcDir).filter(f => f.endsWith('.md')).forEach(f => validMdBases.add(path.basename(f, '.md')));
   }
-
-  // Delete/log only orphaned files
   htmlFiles.forEach(htmlFile => {
-    const baseName = path.basename(htmlFile, '.html');
-    if (!validMdBases.has(baseName)) {
-      const fullPath = path.join(config.outDir, htmlFile);
-      fs.unlinkSync(fullPath);
+    if (!validMdBases.has(path.basename(htmlFile, '.html'))) {
+      fs.unlinkSync(path.join(config.outDir, htmlFile));
       console.log(`🗑️ Removed orphan: ${config.name}/${htmlFile}`);
     }
   });
 }
 
-/**
- * Build all files for a configuration section
- * @param {BuildConfig} config
- * @returns {object[]} Array of { path, metadata } for successfully built files
- */
-function buildConfig(config) {
-  // Safety guard: Ensure the core paths actually exist in the config object
-  if (!config.srcDir || !config.outDir || !config.template) {
-    console.warn(`⚠️ Skipping ${config.name}: Missing required paths (srcDir, outDir, or template) in config.`);
-    return [];
-  }
-
-  cleanupOrphanedHtml(config);
-  if (!fs.existsSync(config.srcDir)) {
-    console.warn(`⚠️ Skipping ${config.name}: Source directory missing`);
-    return [];
-  }
-
-  const mdFiles = fs.readdirSync(config.srcDir).filter(f => f.endsWith('.md'));
-  if (mdFiles.length === 0) {
-    console.warn(`⚠️ No .md files in ${config.srcDir}`);
-    return [];
-  }
-
-  console.log(`🔨 Building ${mdFiles.length} ${config.name} page(s)...`);
-  const generatedItems = [];
-
-  mdFiles.forEach(file => {
-    const result = processFile(path.join(config.srcDir, file), config);
-    if (result) generatedItems.push(result);
-  });
-
-    // Generate JS index file (excludes index.html, sorted for VCS stability)
-    if (config.generateIndexFile && config.indexOutputPath && config.indexVariableName) {
-      const filteredItems = generatedItems.filter(item => path.basename(item.path) !== 'index.html');
-      filteredItems.sort((a, b) => a.path.localeCompare(b.path));
-
-      const metadataList = filteredItems.map(item => item.metadata);
-      const jsContent = `export const ${config.indexVariableName} = ${JSON.stringify(metadataList, null, 2)}\n`;
-      fs.writeFileSync(config.indexOutputPath, jsContent);
-      console.log(`📝 Generated index (${filteredItems.length} items): ${path.relative(WORKING_DIR, config.indexOutputPath)}`);
-    }
-
-    console.log(`✨ ${config.name} build complete`);
-    return generatedItems;
-}
-
 // ======================
 // EXECUTION
 // ======================
-console.log('🚀 Starting build...\n');
-BUILD_CONFIGS.forEach(buildConfig);
-console.log('\n✅ Initial build finished');
+
+function runBuild() {
+  console.log('🚀 Starting build...\n');
+
+  BUILD_CONFIGS.forEach(config => {
+    if (!config.srcDir || !config.outDir || !config.template) {
+      console.warn(`⚠️ Skipping ${config.name}: Missing required paths.`);
+      return;
+    }
+
+    cleanupOrphanedHtml(config);
+    if (!fs.existsSync(config.srcDir)) {
+      console.warn(`⚠️ Skipping ${config.name}: Source directory missing`);
+      return;
+    }
+
+    const mdFiles = fs.readdirSync(config.srcDir).filter(f => f.endsWith('.md'));
+    const parsedFiles = [];
+    const metadataList = [];
+
+    mdFiles.forEach(file => {
+      const filePath = path.join(config.srcDir, file);
+      try {
+        const { attributes, body } = fm(fs.readFileSync(filePath, 'utf8'));
+        const fileName = `${path.basename(filePath, '.md')}.html`;
+        const isIndex = fileName === 'index.html';
+
+        const fieldsToValidate = isIndex
+        ? config.requiredFields.filter(f => !['datePublished', 'dateModified'].includes(f))
+        : config.requiredFields;
+
+        const missing = fieldsToValidate.filter(f => !attributes[f]);
+        if (missing.length) {
+          console.warn(`⚠️ Skipping ${config.name}/${file}: Missing [${missing.join(', ')}]`);
+          return;
+        }
+
+        const templateUrl = isIndex ? `/${config.name}/` : `/${config.name}/${fileName}`;
+        const indexPathEntry = `/${config.name}/${fileName}`;
+
+        parsedFiles.push({ filePath, attributes, body, fileName, indexPathEntry, templateUrl, isIndex });
+
+        if (!isIndex) {
+          metadataList.push({
+            fileName: indexPathEntry,
+            title: String(attributes.title ?? '').trim(),
+            description: String(attributes.description ?? '').trim(),
+            dateString: String(attributes.datePublished ?? '').trim(),
+            dateModified: String(attributes.dateModified ?? '').trim()
+          });
+        }
+      } catch (error) {
+        console.error(`❌ ${config.name} parse error (${file}):`, error.message);
+      }
+    });
+
+    if (config.generateIndexFile && config.indexOutputPath && metadataList.length > 0) {
+      const sortedMetadata = [...metadataList].sort((a, b) => a.fileName.localeCompare(b.fileName));
+      fs.writeFileSync(config.indexOutputPath, JSON.stringify(sortedMetadata, null, 2));
+      console.log(`📝 Generated JSON index (${sortedMetadata.length} items) for ${config.name}: ${path.relative(WORKING_DIR, config.indexOutputPath)}`);
+    }
+
+    if (parsedFiles.length === 0) return;
+
+    const extensions = loadExtensions(config);
+    console.log(`🔨 Building ${parsedFiles.length} ${config.name} page(s)...`);
+
+    parsedFiles.forEach(parsed => {
+      processFile(parsed, config, extensions);
+    });
+
+    console.log(`✨ ${config.name} build complete`);
+  });
+
+  console.log('\n✅ Build finished');
+}
+
+runBuild();
 
 if (IS_LIVE_MODE) {
   console.log(`\n👀 Live mode active | HTTP server: http://${HTTP_SERVER_HOST}:${HTTP_SERVER_PORT}\n`);
-
   const { spawn } = require('child_process');
   let serverProcess = null;
 
   try {
-    serverProcess = spawn('python3', [
-      '-m', 'http.server', String(HTTP_SERVER_PORT), '-b', HTTP_SERVER_HOST
-    ], {
-      cwd: WORKING_DIR,
-      stdio: ['ignore', 'pipe', 'pipe'],
-      shell: false
+    serverProcess = spawn('python3', ['-m', 'http.server', String(HTTP_SERVER_PORT), '-b', HTTP_SERVER_HOST], {
+      cwd: WEB_DIR, stdio: ['ignore', 'pipe', 'pipe'], shell: false
     });
-
     serverProcess.stdout.on('data', data => console.log(`[HTTP] ${data.toString().trim()}`));
     serverProcess.stderr.on('data', data => console.error(`[HTTP] ${data.toString().trim()}`));
     serverProcess.on('error', err => {
-      console.warn(`⚠️ HTTP server failed: ${err.message}\n   (Ensure Python 3 is installed. Live mode continues without server.)`);
+      console.warn(`⚠️ HTTP server failed: ${err.message}`);
       serverProcess = null;
     });
 
@@ -236,7 +255,7 @@ if (IS_LIVE_MODE) {
     const cleanup = () => {
       if (cleanupExecuted || !serverProcess?.kill) return;
       cleanupExecuted = true;
-      try { serverProcess.kill(); } catch (e) { /* silent fail */ }
+      try { serverProcess.kill(); } catch (e) { }
       console.log('\n👋 HTTP server stopped');
     };
 
@@ -247,25 +266,21 @@ if (IS_LIVE_MODE) {
     console.warn(`⚠️ Failed to start HTTP server: ${err.message}`);
   }
 
-  // Watch source directories with POSIX-normalized globs (chokidar requirement)
-  BUILD_CONFIGS.forEach(config => {
-    if (fs.existsSync(config.srcDir)) {
-      let rebuildDebounce;
-      const watchPattern = path.join(config.srcDir, '*.md').replace(/\\/g, '/');
+  const watchPatterns = BUILD_CONFIGS
+  .filter(c => c.srcDir && fs.existsSync(c.srcDir))
+  .map(c => path.join(c.srcDir, '*.md').replace(/\\/g, '/'));
 
-      chokidar.watch(watchPattern, {
-        ignoreInitial: true,
-        awaitWriteFinish: { stabilityThreshold: 200, pollInterval: 100 },
-        persistent: true
-      }).on('all', (event, filePath) => {
-        clearTimeout(rebuildDebounce);
-        rebuildDebounce = setTimeout(() => {
-          console.log(`\n🔄 Change detected in ${config.name} (${event}: ${path.basename(filePath)})`);
-          buildConfig(config);
-        }, 250);
-      });
-
-      console.log(`🔄 Live reloading active for: ${config.srcDir} (monitoring .md files)`);
-    }
-  });
+  if (watchPatterns.length > 0) {
+    let rebuildDebounce;
+    chokidar.watch(watchPatterns, {
+      ignoreInitial: true, awaitWriteFinish: { stabilityThreshold: 200, pollInterval: 100 }, persistent: true
+    }).on('all', (event, filePath) => {
+      clearTimeout(rebuildDebounce);
+      rebuildDebounce = setTimeout(() => {
+        console.log(`\n🔄 Change detected (${event}: ${path.basename(filePath)})`);
+        runBuild();
+      }, 250);
+    });
+    console.log(`🔄 Live reloading active (monitoring .md files)`);
+  }
 }

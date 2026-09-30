@@ -1,3 +1,5 @@
 node_modules/
+public/index.html
 public/about/
 public/articles/
+source/index.json

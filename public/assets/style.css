@@ -103,8 +103,8 @@ ul {
 
 ::view-transition-old(root),
 ::view-transition-new(root) {
-	animation-duration: 0.3s;
-	animation-timing-function: ease-out;
+	animation-duration: 0.2s;
+	animation-timing-function: linear;
 }
 
 /* ---------------------------------------- */
