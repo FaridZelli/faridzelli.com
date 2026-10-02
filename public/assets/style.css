@@ -158,14 +158,14 @@ header {
 	box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.8);
 }
 
-@media (min-width: 769px) and (min-height: 481px) {
+/*@media (min-width: 769px) and (min-height: 481px) {
 	@media (hover: hover) {header:hover {
-/* 		background-color: rgba(40, 40, 40, 0.8); */
+		background-color: rgba(40, 40, 40, 0.8);
 		backdrop-filter: blur(10px);
 		-webkit-backdrop-filter: blur(10px);
-/* 		padding: 0.5rem 0; */
+		padding: 0.5rem 0;
 	}}
-}
+}*/
 
 header .basic-container {
 	min-height: 56px;
@@ -204,14 +204,14 @@ header nav a {
 }
 
 @media (hover: hover) and (pointer: fine) {
-	@media (hover: hover) {header .logo a:hover {
+	header .logo a:hover {
 		color: white;
 		text-decoration: none;
-	}}
-	@media (hover: hover) {header nav a:hover {
+	}
+	header nav a:hover {
 		color: white;
 		text-decoration: none;
-	}}
+	}
 }
 
 @media (min-height: 481px) {
@@ -398,11 +398,7 @@ padding: 1rem 0;
 	transition: all 0.3s ease-in-out;
 }
 
-@media (hover: hover) {.social-links .icon-content a:hover {
-	color: white;
-}}
-
-@media (hover: hover) {.social-links .icon-content a:hover svg {
+@media (hover: hover) and (pointer: fine) {.social-links .icon-content a:hover svg {
 	transform: translateY(0.6rem) scale(1.1);
 }}
 
@@ -418,7 +414,7 @@ padding: 1rem 0;
 /* --- Social Media Icon Colors --- */
 /* ---------------------------------------- */
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
 
 .social-links .icon-content a[data-social="GitHub"]:hover {color: #F0F6FC}
 .social-links .icon-content a[data-social="GitHub"]~.tooltip {background-color: #F0F6FC; color: black;}
