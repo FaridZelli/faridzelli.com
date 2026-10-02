@@ -68,14 +68,14 @@
                 <div class="profile">
                     <img src="/assets/resources/index/profile.jpg" alt="Profile Picture">
                 </div>
-            </div>
-            <a href="javascript:void(0)" class="scroll-arrow" aria-label="Scroll Down">
+                <a href="#content" class="scroll-arrow" aria-label="Scroll Down">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
                     <path d="M12 5v.5m0 3v1.5m0 3v6"></path>
                     <path d="M18 13l-6 6"></path>
                     <path d="M6 13l6 6"></path>
                 </svg>
             </a>
+            </div>
         </section>
 
         <section id="content">
@@ -84,38 +84,6 @@
             </div>
         </section>
     </main>
-
-<!-- Bouncing Arrow Script -->
-
-    <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const redRectangle = document.querySelector('.red-rectangle');
-        const scrollArrow = document.querySelector('.scroll-arrow');
-
-        function updateArrowPosition() {
-            const rect = redRectangle.getBoundingClientRect();
-            const arrowTop = rect.bottom + window.scrollY + 20;
-            scrollArrow.style.top = `${arrowTop}px`;
-        }
-
-        window.addEventListener('resize', updateArrowPosition);
-        window.addEventListener('load', updateArrowPosition);
-        updateArrowPosition();
-    });
-    document.querySelector(".scroll-arrow").addEventListener("click", function(e) {
-        e.preventDefault();
-
-        const header = document.querySelector("header");
-        const hero = document.querySelector("#hero");
-        const headerHeight = header.offsetHeight;
-        const heroBottom = hero.offsetTop + hero.offsetHeight;
-
-        window.scrollTo({
-            top: heroBottom - headerHeight,
-            behavior: "smooth"
-        });
-    });
-    </script>
 
 <!-- Footer -->
 

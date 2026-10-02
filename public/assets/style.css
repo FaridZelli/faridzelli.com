@@ -447,11 +447,17 @@ padding: 1rem 0;
 	}
 
 	header nav a {
-		margin-right: 1rem;
+		margin-right: 0rem;
+		margin-left: 16px;
 	}
 
 	header .logo {
-		margin: 0 1rem;
+/* 		font-size: 22px; */
+		margin: 0 0rem;
+	}
+
+	header .basic-container {
+/* 		width: 95%; */
 	}
 
 	#hero {
@@ -488,6 +494,7 @@ padding: 1rem 0;
 		display: block;
 		position: absolute;
 		left: 50%;
+		bottom: -54px;
 		transform: translateX(-50%);
 		color: #e0e0e0;
 		cursor: pointer;
@@ -523,7 +530,7 @@ padding: 1rem 0;
 		align-items: flex-start;
 		}
 		header .basic-container {
-			min-height: 3rem;
+			min-height: 2.5rem;
 		}
 		header .logo {
 			display:none;
