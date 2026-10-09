@@ -419,20 +419,14 @@ padding: 1rem 0;
 .social-links .icon-content a[data-social="GitHub"]:hover {color: #F0F6FC}
 .social-links .icon-content a[data-social="GitHub"]~.tooltip {background-color: #F0F6FC; color: black;}
 
-.social-links .icon-content a[data-social="LinkedIn"]:hover {color: #0965C1}
-.social-links .icon-content a[data-social="LinkedIn"]~.tooltip {background-color: #0965C1}
-
-.social-links .icon-content a[data-social="YouTube"]:hover {color: #FE0232}
-.social-links .icon-content a[data-social="YouTube"]~.tooltip {background-color: #FE0232}
+.social-links .icon-content a[data-social="YouTube"]:hover {color: #FF0033}
+.social-links .icon-content a[data-social="YouTube"]~.tooltip {background-color: #FF0033}
 
 .social-links .icon-content a[data-social="Instagram"]:hover {color: #D33F93}
 .social-links .icon-content a[data-social="Instagram"]~.tooltip {background-color: #D33F93}
 
-.social-links .icon-content a[data-social="Twitter"]:hover {color: #FFFFFE}
-.social-links .icon-content a[data-social="Twitter"]~.tooltip {background-color: #FFFFFE; color: black;}
-
-.social-links .icon-content a[data-social="Telegram"]:hover {color: #53A8EB}
-.social-links .icon-content a[data-social="Telegram"]~.tooltip {background-color: #53A8EB}
+.social-links .icon-content a[data-social="Twitter"]:hover {color: #1D9BF0}
+.social-links .icon-content a[data-social="Twitter"]~.tooltip {background-color: #1D9BF0}
 
 }
 
