@@ -17,8 +17,22 @@ html {
 	font-size: 16px;
 }
 
+@font-face {
+	font-family: 'Poppins';
+	src: url('/assets/resources/fonts/poppins-v24-latin-regular.woff2') format('woff2');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Arimo';
+	src: url('/assets/resources/fonts/arimo-v36-latin-regular.woff2') format('woff2');
+	font-weight: normal;
+	font-style: normal;
+}
+
 body {
-	font-family: 'Poppins', 'Arial', 'Helvetica Neue', 'Helvetica', 'sans-serif';
+	font-family: 'Poppins', sans-serif;
 	line-height: 1.6;
 	color: #222;
 	background-color: #fdfdfd;
@@ -26,13 +40,6 @@ body {
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
-}
-
-@font-face {
-	font-family: 'Poppins';
-	src: url('/assets/resources/poppins-latin.woff2') format('woff2');
-	font-weight: normal;
-	font-style: normal;
 }
 
 .basic-container {
@@ -103,8 +110,8 @@ ul {
 
 ::view-transition-old(root),
 ::view-transition-new(root) {
-	animation-duration: 0.1s;
-	animation-timing-function: linear;
+	animation-duration: 0.2s;
+	animation-timing-function: ease-in-out;
 }
 
 /* ---------------------------------------- */
@@ -139,6 +146,10 @@ main article {
 .article-container p {
 	margin-top: 1rem;
 	margin-bottom: 1rem;
+}
+
+.copy-btn {
+	font-family: 'Poppins', sans-serif;
 }
 
 /* ---------------------------------------- */
@@ -305,38 +316,48 @@ justify-content: center;
 /* ---------------------------------------- */
 
 footer {
-text-align: center;
-background: #121212;
-padding: 1rem 0;
+	text-align: center;
+	background: #121212;
+	padding: 1rem 0;
 }
 
 .email-list {
-	display: flex;
-	flex-direction: column;
+	display: grid;
+	grid-template-columns: auto auto;
+	justify-content: center;
 	align-items: center;
 	margin: 0.5rem 0;
 }
 
 .email-item {
-	padding: 0.2rem 0;
-	margin: 0.3rem 0;
+	width: 10rem;
+	margin: 0.5rem 0.4rem;
 	color: white;
 	text-decoration: none;
 	font-size: 0.9rem;
-	transition: all 0.3s ease-in-out;
-	width: 12rem;
 }
 
-@media (hover: hover) and (pointer: fine) {.email-item:hover {
-	text-decoration: none;
+.email-item span {
+	display: inline-block;
+	transition: transform 0.3s ease-in-out;
+}
+
+@media (hover: hover) and (pointer: fine) {.email-item:hover span {
 	transform: scale(1.1);
 }}
 
+.pgp-item {
+	margin: 0.5rem 0.4rem;
+	color: #808080;
+	font-family: 'Arimo', sans-serif;
+	font-size: 0.9rem;
+	text-decoration: none;
+}
+
 .footer-copyright {
-	background-color: #121212;
 	color: #808080;
 	text-align: center;
-	font-family: 'Arial', 'Helvetica Neue', 'Helvetica', 'sans-serif';
+	font-family: 'Arimo', sans-serif;
 	font-size: 0.9rem;
 }
 
@@ -417,7 +438,7 @@ padding: 1rem 0;
 @media (hover: hover) and (pointer: fine) {
 
 .social-links .icon-content a[data-social="GitHub"]:hover {color: #F0F6FC}
-.social-links .icon-content a[data-social="GitHub"]~.tooltip {background-color: #F0F6FC; color: black;}
+.social-links .icon-content a[data-social="GitHub"]~.tooltip {background-color: #F0F6FC; color: black}
 
 .social-links .icon-content a[data-social="YouTube"]:hover {color: #FF0033}
 .social-links .icon-content a[data-social="YouTube"]~.tooltip {background-color: #FF0033}
@@ -425,8 +446,8 @@ padding: 1rem 0;
 .social-links .icon-content a[data-social="Instagram"]:hover {color: #D33F93}
 .social-links .icon-content a[data-social="Instagram"]~.tooltip {background-color: #D33F93}
 
-.social-links .icon-content a[data-social="Twitter"]:hover {color: #1D9BF0}
-.social-links .icon-content a[data-social="Twitter"]~.tooltip {background-color: #1D9BF0}
+.social-links .icon-content a[data-social="X (Twitter)"]:hover {color: #F0F6FC}
+.social-links .icon-content a[data-social="X (Twitter)"]~.tooltip {background-color: #F0F6FC; color: black}
 
 }
 

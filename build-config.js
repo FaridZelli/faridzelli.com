@@ -27,7 +27,7 @@ module.exports = {
 			name: 'about',
 			srcDir: 'source/md-about',
 			outDir: 'public/about',
-			template: 'source/build-config-templates/template-article.html.txt',
+			template: 'source/build-config-templates/template-article.html',
 			requiredFields: ['title', 'description'],
 			generateIndexFile: false
 		},
@@ -35,7 +35,7 @@ module.exports = {
 			name: 'articles',
 			srcDir: 'source/md-articles',
 			outDir: 'public/articles',
-			template: 'source/build-config-templates/template-article.html.txt',
+			template: 'source/build-config-templates/template-article.html',
 			requiredFields: ['title', 'description', 'datePublished', 'dateModified'],
 			extensions: ['source/build-config-extensions/article-widget.js'],
 			generateIndexFile: true,
@@ -46,7 +46,7 @@ module.exports = {
 			name: 'home',
 			srcDir: 'source/md-home',
 			outDir: 'public',
-			template: 'source/build-config-templates/template-home.html.txt',
+			template: 'source/build-config-templates/template-home.html',
 			requiredFields: [],
 			extensions: ['source/build-config-extensions/article-widget.js'],
 			generateIndexFile: false

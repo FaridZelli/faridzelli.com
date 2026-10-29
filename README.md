@@ -13,6 +13,7 @@ This is a minimal static site generator for my personal website.
 - [Chokidar](https://github.com/paulmillr/chokidar)
 - [Tabler Icons](https://github.com/tabler/tabler-icons)
 - [Feather](https://github.com/feathericons/feather)
+- [google-webfonts-helper](https://github.com/majodev/google-webfonts-helper)
 
 # Quick Setup
 
