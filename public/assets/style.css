@@ -443,11 +443,14 @@ footer {
 .social-links .icon-content a[data-social="YouTube"]:hover {color: #FF0033}
 .social-links .icon-content a[data-social="YouTube"]~.tooltip {background-color: #FF0033}
 
+.social-links .icon-content a[data-social="Harbor"]:hover {color: #FF6A00}
+.social-links .icon-content a[data-social="Harbor"]~.tooltip {background-color: #FF6A00}
+
 .social-links .icon-content a[data-social="Instagram"]:hover {color: #D33F93}
 .social-links .icon-content a[data-social="Instagram"]~.tooltip {background-color: #D33F93}
 
-.social-links .icon-content a[data-social="X (Twitter)"]:hover {color: #F0F6FC}
-.social-links .icon-content a[data-social="X (Twitter)"]~.tooltip {background-color: #F0F6FC; color: black}
+.social-links .icon-content a[data-social="X (Twitter)"]:hover {color: #FFFFFF}
+.social-links .icon-content a[data-social="X (Twitter)"]~.tooltip {background-color: #FFFFFF; color: black}
 
 }
 
