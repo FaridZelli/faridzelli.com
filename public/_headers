@@ -1,2 +1,6 @@
 /assets/*
   Cache-Control: public, max-age=86400
+
+/.well-known/polycentric.json
+  Access-Control-Allow-Origin: *
+  Content-Type: application/json
