@@ -18,8 +18,10 @@
 	width: 100%;
 }
 
-.red-rectangle-content h1 {
-	font-size: 24px;
+.red-rectangle-content p {
+	font-size: 1.5rem;
+	font-weight: 600;
+	color: #eee;
 }
 
 /* ---------------------------------------- */
