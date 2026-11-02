@@ -39,6 +39,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // Floating Shapes
   // ------------------------------
 
+  const reducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  );
+
   const shapeConfigs = {
     'svg-shapes-less': 25,
     'svg-shapes-more': 50
@@ -70,32 +74,38 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   ];
 
-  containers.forEach(container => {
-    // Determine count based on which config class matches the container
-    let shapeCount = 0;
-    for (const [className, count] of Object.entries(shapeConfigs)) {
-      if (container.classList.contains(className)) {
-        shapeCount = count;
-        break;
+  function renderFloatingShapes() {
+    containers.forEach(container => {
+      // Determine count based on which config class matches the container
+      let shapeCount = 0;
+      for (const [className, count] of Object.entries(shapeConfigs)) {
+        if (container.classList.contains(className)) {
+          shapeCount = count;
+          break;
+        }
       }
-    }
 
-    // Skip if no valid config class is found
-    if (shapeCount === 0) return;
+      // Skip if no valid config class is found
+      if (shapeCount === 0) return;
 
-    for (let i = 0; i < shapeCount; i++) {
-      const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
-      const shapeElement = document.createElement("div");
-      shapeElement.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#7F4300" stroke="#FFA742" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">${randomShape.svg}</svg>`;
-      const randomX = Math.random() * 100;
-      const randomY = Math.random() * 100;
-      shapeElement.style.position = "absolute";
-      shapeElement.style.left = `${randomX}%`;
-      shapeElement.style.top = `${randomY}%`;
-      const animations = ["moveDiagonal", "moveUpDown", "moveSideways"];
-      shapeElement.style.animation = `${animations[Math.floor(Math.random() * animations.length)]} ${Math.random() * 15 + 3}s infinite alternate`;
+      for (let i = 0; i < shapeCount; i++) {
+        const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
+        const shapeElement = document.createElement("div");
+        shapeElement.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#7F4300" stroke="#FFA742" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">${randomShape.svg}</svg>`;
+        const randomX = Math.random() * 100;
+        const randomY = Math.random() * 100;
+        shapeElement.style.position = "absolute";
+        shapeElement.style.left = `${randomX}%`;
+        shapeElement.style.top = `${randomY}%`;
+        const animations = ["moveDiagonal", "moveUpDown", "moveSideways"];
+        shapeElement.style.animation = `${animations[Math.floor(Math.random() * animations.length)]} ${Math.random() * 15 + 3}s infinite alternate`;
 
-      container.appendChild(shapeElement);
-    }
-  });
+        container.appendChild(shapeElement);
+      }
+    });
+  }
+
+  // Draw the shapes
+  if (!reducedMotion.matches) renderFloatingShapes();
+
 });

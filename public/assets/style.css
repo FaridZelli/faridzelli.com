@@ -100,18 +100,30 @@ ul {
 	}
 }
 
+/* --- Reduced Animation --- */
+
+@media (prefers-reduced-motion: reduce) {
+	* {
+		animation: none !important;
+		transition: none !important;
+		scroll-behavior: auto !important;
+	}
+}
+
 /* ---------------------------------------- */
 /* --- Page Transition --- */
 /* ---------------------------------------- */
 
-@view-transition {
-	navigation: auto;
-}
+@media not (prefers-reduced-motion: reduce) {
+	@view-transition {
+		navigation: auto;
+	}
 
-::view-transition-old(root),
-::view-transition-new(root) {
-	animation-duration: 0.2s;
-	animation-timing-function: ease-in-out;
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation-duration: 0.2s;
+		animation-timing-function: ease-in-out;
+	}
 }
 
 /* ---------------------------------------- */
@@ -170,7 +182,7 @@ header {
 }
 
 /*@media (min-width: 769px) and (min-height: 481px) {
-	@media (hover: hover) {header:hover {
+	@media (hover: hover) and (pointer: fine) and (not (prefers-reduced-motion: reduce)) {header:hover {
 		background-color: rgba(40, 40, 40, 0.8);
 		backdrop-filter: blur(10px);
 		-webkit-backdrop-filter: blur(10px);
@@ -214,7 +226,7 @@ header nav a {
 	margin-right: 1.5rem;
 }
 
-/*@media (hover: hover) and (pointer: fine) {
+/*@media (hover: hover) and (pointer: fine) and (not (prefers-reduced-motion: reduce)) {
 	header .logo a:hover {
 		color: white;
 		text-decoration: none;
@@ -294,7 +306,7 @@ justify-content: center;
 	transition: box-shadow 0.5s ease-in-out 0.1s;
 }
 
-@media (hover: hover) and (pointer: fine) {
+@media (hover: hover) and (pointer: fine) and (not (prefers-reduced-motion: reduce)) {
 
 .red-rectangle:hover {
 	background: rgba(140, 0, 25, 0.8);
@@ -342,7 +354,7 @@ footer {
 	transition: transform 0.3s ease-in-out;
 }
 
-@media (hover: hover) and (pointer: fine) {.email-item:hover span {
+@media (hover: hover) and (pointer: fine) and (not (prefers-reduced-motion: reduce)) {.email-item:hover span {
 	transform: scale(1.1);
 }}
 
@@ -394,19 +406,17 @@ footer {
 	pointer-events: none;
 	visibility: hidden;
 	font-size: 0.9rem;
-	transition: all 0.3s ease;
+	transition: opacity 0.3s ease, top 0.3s ease, visibility 0.3s;
 	white-space: nowrap;
 }
 
-.social-links .icon-content:hover .tooltip {
-	opacity: 1;
-	visibility: visible;
-	top: -1.8rem;
+@media (hover: hover) and (pointer: fine) and (not (prefers-reduced-motion: reduce)) {
+	.social-links .icon-content:hover .tooltip {
+		opacity: 1;
+		visibility: visible;
+		top: -1.8rem;
+	}
 }
-
-@media (hover: none) {.social-links .icon-content .tooltip {
-	display:none;
-}}
 
 .social-links .icon-content a {
 	position: relative;
@@ -419,7 +429,7 @@ footer {
 	transition: all 0.3s ease-in-out;
 }
 
-@media (hover: hover) and (pointer: fine) {.social-links .icon-content a:hover svg {
+@media (hover: hover) and (pointer: fine) and (not (prefers-reduced-motion: reduce)) {.social-links .icon-content a:hover svg {
 	transform: translateY(0.6rem) scale(1.1);
 }}
 
@@ -435,7 +445,7 @@ footer {
 /* --- Social Media Icon Colors --- */
 /* ---------------------------------------- */
 
-@media (hover: hover) and (pointer: fine) {
+@media (hover: hover) and (pointer: fine) and (not (prefers-reduced-motion: reduce)) {
 
 .social-links .icon-content a[data-social="GitHub"]:hover {color: #F0F6FC}
 .social-links .icon-content a[data-social="GitHub"]~.tooltip {background-color: #F0F6FC; color: black}
@@ -528,7 +538,7 @@ footer {
 		transform: translateY(0rem) scale(1.0);
 	}
 
-	@media (hover: hover) and (pointer: fine) {
+	@media (hover: hover) and (pointer: fine) and (not (prefers-reduced-motion: reduce)) {
 		.social-links .icon-content a:hover svg {
 			transform: translateY(0rem) scale(1.1);
 		}
