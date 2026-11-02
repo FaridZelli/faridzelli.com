@@ -45,12 +45,12 @@
 
     <header>
         <div class="basic-container">
-            <h1 class="logo"><a href="/" aria-label="Go to homepage">Farid Zelli</a></h1>
+            <a href="/" class="logo" aria-hidden="true" tabindex="-1">Farid Zelli</a>
             <nav>
                 <ul>
-                    <li><a href="/" class="logo-landscape" aria-label="Go to homepage">Home</a></li>
-                    <li><a href="/articles/" aria-label="View articles">Articles</a></li>
-                    <li><a href="/about/" aria-label="Learn more about the author">About Me</a></li>
+                    <li><a href="/" class="accessibility-home">Home</a></li>
+                    <li><a href="/articles/">Articles</a></li>
+                    <li><a href="/about/">About Me</a></li>
                 </ul>
             </nav>
         </div>
@@ -58,7 +58,7 @@
 
 <!-- Main -->
 
-    <main>
+    <main id="main">
         <section id="hero">
             <div class="svg-shapes-more"></div>
             <div class="red-rectangle">
@@ -66,9 +66,9 @@
                     <p>Welcome to my journal!<br><br>I'm Farid Zelli, an audio-visual creative with a longstanding background in data privacy and open-source software.</p>
                 </div>
                 <div class="profile">
-                    <img src="/assets/resources/index/profile.jpg" alt="Profile Picture">
+                    <img src="/assets/resources/index/profile.jpg" alt="Close-up portrait of Farid smiling at the camera, wearing a plaid button-up shirt, warmly lit in a dim room.">
                 </div>
-                <a href="#content" class="scroll-arrow" aria-label="Scroll Down">
+                <a href="#content" class="scroll-arrow" aria-hidden="true" tabindex="-1">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
                     <path d="M12 5v.5m0 3v1.5m0 3v6"></path>
                     <path d="M18 13l-6 6"></path>
@@ -119,18 +119,18 @@
                         <div class="tooltip">Instagram</div>
                     </li>
                     <li class="icon-content">
-                        <a href="https://www.x.com/faridzelli" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" data-social="X (Twitter)">
+                        <a href="https://www.x.com/faridzelli" target="_blank" rel="noopener noreferrer" aria-label="X (formerly Twitter)" data-social="X (formerly Twitter)">
                             <div class="filled"></div>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-x"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 4l11.733 16h4.267l-11.733 -16l-4.267 0" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" /></svg>
                         </a>
-                        <div class="tooltip">X (Twitter)</div>
+                        <div class="tooltip">X (formerly Twitter)</div>
                     </li>
                 </ul>
                 <div class="email-list">
                     <a href="mailto:faridzelli@gmail.com" class="email-item"><span>faridzelli@gmail.com</span></a>
-                    <a href="https://keys.openpgp.org/search?q=faridzelli%40gmail.com" class="pgp-item">PGP↗</a>
+                    <a href="https://keys.openpgp.org/search?q=faridzelli%40gmail.com" class="pgp-item" aria-label="PGP key for Gmail address">PGP↗</a>
                     <a href="mailto:faridzelli@proton.me" class="email-item"><span>faridzelli@proton.me</span></a>
-                    <a href="https://keys.openpgp.org/search?q=faridzelli%40proton.me" class="pgp-item">PGP↗</a>
+                    <a href="https://keys.openpgp.org/search?q=faridzelli%40proton.me" class="pgp-item" aria-label="PGP key for Proton Mail address">PGP↗</a>
                 </div>
                 <p class="footer-copyright">&copy; 2025–2026 Farid Zellipour. All rights reserved.<br>This website does not use cookies.<br>(or biscuits, if you may)</p>
         </div>

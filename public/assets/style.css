@@ -181,15 +181,6 @@ header {
 	box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.8);
 }
 
-/*@media (min-width: 769px) and (min-height: 481px) {
-	@media (hover: hover) and (pointer: fine) and (not (prefers-reduced-motion: reduce)) {header:hover {
-		background-color: rgba(40, 40, 40, 0.8);
-		backdrop-filter: blur(10px);
-		-webkit-backdrop-filter: blur(10px);
-		padding: 0.5rem 0;
-	}}
-}*/
-
 header .basic-container {
 	min-height: 56px;
 	display: flex;
@@ -204,9 +195,6 @@ header .logo {
 	font-size: 24px;
 	font-weight: bold;
 	margin-left: 1.5rem;
-}
-
-header .logo a {
 	color: #e0e0e0;
 	text-decoration: none;
 	transition: all 0.3s ease-out;
@@ -221,25 +209,22 @@ header nav a {
 	font-size: 1rem;
 	color: #e0e0e0;
 	text-decoration: none;
-	transition: all 0.3s ease-out;
+	transition: all 0.3s ease-in;
 	display: block;
 	margin-right: 1.5rem;
 }
 
-/*@media (hover: hover) and (pointer: fine) and (not (prefers-reduced-motion: reduce)) {
-	header .logo a:hover {
-		color: white;
-		text-decoration: none;
-	}
-	header nav a:hover {
-		color: white;
-		text-decoration: none;
-	}
-}*/
-
 @media (min-height: 481px) {
-	header .logo-landscape {
-		display: none;
+	.accessibility-home {
+		opacity: 0;
+		transform: translateY(-0.5rem);
+		pointer-events: none;
+		transition: all 0.3s ease-in-out;
+	}
+	.accessibility-home:focus-visible {
+		opacity: 1;
+		transform: translateY(0);
+		pointer-events: auto;
 	}
 }
 
@@ -447,20 +432,20 @@ footer {
 
 @media (hover: hover) and (pointer: fine) and (not (prefers-reduced-motion: reduce)) {
 
-.social-links .icon-content a[data-social="GitHub"]:hover {color: #F0F6FC}
+.social-links .icon-content a[data-social="GitHub"]:is(:hover, :focus-visible) {color: #F0F6FC}
 .social-links .icon-content a[data-social="GitHub"]~.tooltip {background-color: #F0F6FC; color: black}
 
-.social-links .icon-content a[data-social="YouTube"]:hover {color: #FF0033}
+.social-links .icon-content a[data-social="YouTube"]:is(:hover, :focus-visible) {color: #FF0033}
 .social-links .icon-content a[data-social="YouTube"]~.tooltip {background-color: #FF0033}
 
-.social-links .icon-content a[data-social="Harbor"]:hover {color: #FF6A00}
+.social-links .icon-content a[data-social="Harbor"]:is(:hover, :focus-visible) {color: #FF6A00}
 .social-links .icon-content a[data-social="Harbor"]~.tooltip {background-color: #FF6A00}
 
-.social-links .icon-content a[data-social="Instagram"]:hover {color: #D33F93}
+.social-links .icon-content a[data-social="Instagram"]:is(:hover, :focus-visible) {color: #D33F93}
 .social-links .icon-content a[data-social="Instagram"]~.tooltip {background-color: #D33F93}
 
-.social-links .icon-content a[data-social="X (Twitter)"]:hover {color: #FFFFFF}
-.social-links .icon-content a[data-social="X (Twitter)"]~.tooltip {background-color: #FFFFFF; color: black}
+.social-links .icon-content a[data-social="X (formerly Twitter)"]:is(:hover, :focus-visible) {color: #FFFFFF}
+.social-links .icon-content a[data-social="X (formerly Twitter)"]~.tooltip {background-color: #FFFFFF; color: black}
 
 }
 
