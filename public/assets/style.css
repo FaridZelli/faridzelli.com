@@ -444,8 +444,8 @@ footer {
 .social-links .icon-content a[data-social="Instagram"]:is(:hover, :focus-visible) {color: #D33F93}
 .social-links .icon-content a[data-social="Instagram"]~.tooltip {background-color: #D33F93}
 
-.social-links .icon-content a[data-social="X (formerly Twitter)"]:is(:hover, :focus-visible) {color: #FFFFFF}
-.social-links .icon-content a[data-social="X (formerly Twitter)"]~.tooltip {background-color: #FFFFFF; color: black}
+.social-links .icon-content a[data-social="X (Twitter)"]:is(:hover, :focus-visible) {color: #FFFFFF}
+.social-links .icon-content a[data-social="X (Twitter)"]~.tooltip {background-color: #FFFFFF; color: black}
 
 }
 
