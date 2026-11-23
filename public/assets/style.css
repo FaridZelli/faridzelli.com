@@ -13,6 +13,8 @@
 }
 
 html {
+	--header-height: 56px;
+	scroll-padding-top: var(--header-height);
 	scroll-behavior: smooth;
 	font-size: 16px;
 }
@@ -182,7 +184,7 @@ header {
 }
 
 header .basic-container {
-	min-height: 56px;
+	min-height: var(--header-height);
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -225,6 +227,9 @@ header nav a {
 		opacity: 1;
 		transform: translateY(0);
 		pointer-events: auto;
+	}
+	.accessibility-home:not(:focus-visible) {
+		position: absolute;
 	}
 }
 
@@ -364,6 +369,7 @@ footer {
 
 .social-links {
 	display: flex;
+	flex-wrap: balance;
 	justify-content: center;
 	align-items: center;
 }
@@ -534,17 +540,17 @@ footer {
 	}
 
 	@media (max-height: 480px) {
-		#hero {
-		align-items: flex-start;
-		}
-		header .basic-container {
-			min-height: 2.5rem;
+		html {
+			--header-height: 2.5rem;
 		}
 		header .logo {
 			display:none;
 		}
 		header nav a {
 			margin: 0 1.2rem;
+		}
+		#hero {
+		align-items: flex-start;
 		}
 		.profile img {
 			display: none;
